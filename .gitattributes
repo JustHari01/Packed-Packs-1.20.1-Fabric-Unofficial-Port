@@ -1,0 +1,5 @@
+# Normalize text files and preserve platform script line endings.
+* text=auto
+/gradlew text eol=lf
+*.bat text eol=crlf
+*.json text eol=lf

@@ -1,0 +1,92 @@
+plugins {
+    id 'multiloader-common'
+    id 'fabric-loom'
+}
+
+evaluationDependsOn(':fidgetz')
+
+sourceSets.main {
+    java.srcDir('../common/src/main/java')
+    resources.srcDir('../common/src/main/resources')
+}
+
+loom {
+    def aw = file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+        fidgetz {
+            sourceSet project(':fidgetz').sourceSets.main
+        }
+    }
+
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client 1.20.1')
+            ideConfigGenerated(true)
+            runDir('run/client')
+            source sourceSets.main
+        }
+    }
+}
+
+repositories {
+    maven { name = 'Terraformers'; url = 'https://maven.terraformersmc.com/' }
+    exclusiveContent {
+        forRepository {
+            maven { name = 'fishstiz'; url = 'https://raw.githubusercontent.com/fishstiz/maven/m2' }
+        }
+        filter {
+            includeModule('io.github.fishstiz', 'minecraft-cursor-fabric')
+            includeModule('io.github.fishstiz', 'minecraft-cursor-fabric-api')
+            includeModule('io.github.fishstiz', 'minecraft-cursor-common-api')
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' }
+        }
+        filter { includeGroup 'maven.modrinth' }
+    }
+    maven { url = 'https://maven.isxander.dev/releases' }
+}
+
+dependencies {
+    api project(path: ':api:fabric', configuration: 'namedElements')
+    include project(':api:fabric')
+
+    minecraft "com.mojang:minecraft:$minecraft_version"
+    mappings loom.officialMojangMappings()
+
+    modImplementation "net.fabricmc:fabric-loader:$fabric_loader_version"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:$fabric_api_version"
+    modApi project(':fidgetz')
+    include project(':fidgetz')
+
+    modCompileOnly libs.modmenu
+    modLocalRuntime libs.modmenu
+
+    modCompileOnly libs.minecraftCursor.api.fabric
+    modLocalRuntime libs.minecraftCursor.fabric
+    compileOnly libs.minecraftCursor.api.common
+
+    compileOnly libs.resourcify
+    compileOnly libs.bundles.respackopts
+    modCompileOnly(libs.controlify) { transitive = false }
+    compileOnly libs.bundles.mixin
+    annotationProcessor libs.mixin.extras
+}
+
+tasks.named('compileJava') {
+    dependsOn(':fidgetz:classes')
+}
+
+tasks.named('remapSourcesJar') {
+    dependsOn(':fidgetz:classes')
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "fidgetz",
+  "version": "0.7.3-port.1+1.20.1",
+  "name": "Fidgetz",
+  "description": "MIT-licensed GUI widget library bundled for Packed Packs 1.20.1",
+  "authors": [
+    "fishstiz"
+  ],
+  "license": "MIT",
+  "environment": "client",
+  "mixins": [
+    {
+      "config": "fidgetz.v0.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "minecraft": "1.20.1",
+    "java": ">=17",
+    "fabric-api": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [
+        "library"
+      ]
+    }
+  }
+}

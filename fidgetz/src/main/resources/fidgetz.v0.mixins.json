@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "package": "io.github.fishstiz.fidgetz.v0.inject.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "AbstractContainerEventHandlerMixin",
+    "AbstractSelectionListEntryMixin",
+    "AbstractSelectionListMixin",
+    "AbstractSliderButtonMixin",
+    "AbstractWidgetMixin",
+    "ContainerEventHandlerMixin",
+    "GuiGraphicsMixin",
+    "GuiEventListenerMixin",
+    "ScreenMixin",
+    "access.AbstractSelectionListAccess",
+    "access.EditBoxAccess",
+    "access.AbstractWidgetAccess"
+  ],
+  "plugin": "io.github.fishstiz.fidgetz.v0.inject.MixinConfigPlugin",
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -27,4 +27,3 @@ The bundled Fidgetz source has its own MIT notice in \`fidgetz/LICENSE_fidgetz\`
 Port source: https://github.com/JustHari01/Packed-Packs-1.20.1-Fabric-Unofficial-Port
 
 This unofficial Fabric 1.20.1 backport was made with AI assistance.
-

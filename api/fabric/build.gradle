@@ -1,0 +1,26 @@
+plugins {
+    id 'multiloader-common'
+    id 'fabric-loom'
+    id 'publish-local'
+}
+
+sourceSets.main {
+    java.srcDir('../common/src/main/java')
+    resources.srcDir('../common/src/main/resources')
+}
+
+loom {
+    runs {
+        remove client
+        remove server
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:$minecraft_version"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:$fabric_loader_version"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:$fabric_api_version"
+    compileOnly libs.bundles.mixin
+    annotationProcessor libs.mixin.extras
+}

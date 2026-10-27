@@ -1,0 +1,53 @@
+package io.github.fishstiz.packed_packs;
+
+import io.github.fishstiz.packed_packs.pack.FolderLocationInfo;
+import io.github.fishstiz.packed_packs.platform.Services;
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+public class PackedPacks {
+    public static final String MOD_ID = "packed_packs";
+    public static final String MOD_NAME = "Packed Packs";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    public static final boolean DEBUG = System.getProperty("packed_packs.debug") != null;
+    public static final ThreadLocal<Consumer<FolderLocationInfo>> FOLDER_COLLECTOR = new ThreadLocal<>();
+
+    private PackedPacks() {
+    }
+
+    public static Path getConfigDir() {
+        return Services.PLATFORM.getConfigDir().resolve(MOD_ID);
+    }
+
+    public static ResourceLocation id(String path) {
+        return new ResourceLocation(MOD_ID, path);
+    }
+
+    public static void openPath(Path path) {
+        Util.getPlatform().openFile(path.toFile());
+    }
+
+    public static long duration(long startNanos) {
+        return (System.nanoTime() - startNanos) / 1_000_000;
+    }
+
+    public static <T, R> R mapOrElse(T obj, R defaultValue, Function<T, R> mapper) {
+        return obj != null ? mapper.apply(obj) : defaultValue;
+    }
+
+    public static void runInParallel(Runnable... tasks) {
+        @SuppressWarnings("unchecked")
+        CompletableFuture<Void>[] futures = (CompletableFuture<Void>[]) new CompletableFuture<?>[tasks.length];
+        for (int i = 0; i < tasks.length; i++) {
+            futures[i] = CompletableFuture.runAsync(tasks[i], Util.backgroundExecutor());
+        }
+        CompletableFuture.allOf(futures).join();
+    }
+}

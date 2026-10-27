@@ -1,0 +1,23 @@
+[versions]
+minecraftCursor = "3.11.3+1.20.1"
+
+[libraries]
+mixin = { module = "org.spongepowered:mixin", version = "0.8.7" }
+mixin-extras = { module = "io.github.llamalad7:mixinextras-common", version = "0.4.1" }
+
+minecraftCursor-api-common = { module = "io.github.fishstiz:minecraft-cursor-common-api", version.ref = "minecraftCursor" }
+minecraftCursor-api-fabric = { module = "io.github.fishstiz:minecraft-cursor-fabric-api", version.ref = "minecraftCursor" }
+minecraftCursor-fabric = { module = "io.github.fishstiz:minecraft-cursor-fabric", version.ref = "minecraftCursor" }
+minecraftCursor-neoforge = { module = "io.github.fishstiz:minecraft-cursor-neoforge", version.ref = "minecraftCursor" }
+
+modmenu = { module = "com.terraformersmc:modmenu", version = "7.2.2" }
+
+resourcify = { module = "maven.modrinth:resourcify", version = "1.8.7" }
+respackopts = { module = "maven.modrinth:respackopts", version = "4.6.2" }
+entityTextureFeatures = { module = "maven.modrinth:entitytexturefeatures", version = "7.2.6-fabric-1.20.1" }
+controlify = { module = "maven.modrinth:DOUdJVEm", version = "gYWWawgz" }
+
+[bundles]
+mixin = ["mixin", "mixin-extras"]
+
+respackopts = ["respackopts"]

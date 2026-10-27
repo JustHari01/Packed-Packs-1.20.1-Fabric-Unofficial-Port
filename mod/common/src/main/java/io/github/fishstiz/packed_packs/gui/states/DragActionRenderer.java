@@ -1,0 +1,79 @@
+package io.github.fishstiz.packed_packs.gui.states;
+
+import io.github.fishstiz.fidgetz.v0.utils.GuiGraphicsUtils;
+import io.github.fishstiz.packed_packs.compat.minecraftcursor.MinecraftCursor;
+import io.github.fishstiz.packed_packs.gui.components.PackListContainer;
+import io.github.fishstiz.packed_packs.pack.PackIconCache;
+import io.github.fishstiz.packed_packs.util.Colors;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+
+public final class DragActionRenderer {
+    private static final int OFFSET_Y = 4;
+    private static final int ICON_SIZE = 48;
+    private static final int NUM_SIZE = 16;
+    private static final int ICON_OFFSET_X = ICON_SIZE / 2;
+    private static final int ICON_OFFSET_Y = ICON_SIZE - OFFSET_Y;
+    private static final int NUM_OFFSET_Y = NUM_SIZE - OFFSET_Y + (ICON_SIZE - NUM_SIZE) / 2;
+    private final PackIconCache iconCache;
+    private final Font font;
+    private final PackListContainer[] lists;
+    private final float z;
+
+    public DragActionRenderer(PackIconCache iconCache, float z, Font font, PackListContainer... lists) {
+        this.iconCache = iconCache;
+        this.font = font;
+        this.lists = lists;
+        this.z = z;
+    }
+
+    public void render(
+            ActiveAction.Dragging dragging,
+            GuiGraphics graphics,
+            int mouseX,
+            int mouseY,
+            float partialTick
+    ) {
+        boolean validDrop = false;
+
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, this.z);
+
+        for (PackListContainer list : lists) {
+            validDrop |= list.extractDropCandidateRenderState(graphics, dragging, mouseX, mouseY, partialTick);
+        }
+
+        renderDragging(dragging, graphics, mouseX, mouseY);
+
+        graphics.pose().popPose();
+
+        if (validDrop) MinecraftCursor.get().setGrabbing();
+        else MinecraftCursor.get().setNotAllowed();
+    }
+
+    private void renderDragging(ActiveAction.Dragging dragging, GuiGraphics graphics, int mouseX, int mouseY) {
+        String sizeString = Integer.toString(dragging.packs().size());
+        int sizeStringWidth = this.font.width(sizeString);
+        int iconX = mouseX - ICON_OFFSET_X;
+        int iconY = mouseY - ICON_OFFSET_Y;
+        int numWidth = NUM_SIZE > sizeStringWidth ? NUM_SIZE : (sizeStringWidth + NUM_SIZE - font.lineHeight);
+        int numX = mouseX - numWidth / 2;
+        int numY = mouseY - NUM_OFFSET_Y;
+
+        int iconRight = iconX + ICON_SIZE;
+        int iconBottom = iconY + ICON_SIZE;
+
+        graphics.fill(iconX, iconY, iconRight, iconBottom, Colors.GRAY_800);
+        GuiGraphicsUtils.texture(graphics, iconCache.get(dragging.srcPack()), iconX, iconY, ICON_SIZE, ICON_SIZE);
+        graphics.fill(iconX, iconY, iconRight, iconBottom, Colors.alpha(Colors.BLACK, 0.5f));
+
+        int numRight = numX + numWidth;
+        int numBottom = numY + NUM_SIZE;
+
+        graphics.fill(numX, numY, numRight, numBottom, Colors.BLUE_500);
+        graphics.drawString(this.font, sizeString, numX + numWidth / 2 - sizeStringWidth / 2, numY + NUM_SIZE / 2 - font.lineHeight / 2, Colors.WHITE);
+
+        graphics.renderOutline(iconX, iconY, ICON_SIZE, ICON_SIZE, Colors.WHITE);
+        graphics.renderOutline(numX, numY, numWidth, NUM_SIZE, Colors.WHITE);
+    }
+}

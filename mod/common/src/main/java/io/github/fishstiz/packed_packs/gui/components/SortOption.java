@@ -1,0 +1,49 @@
+package io.github.fishstiz.packed_packs.gui.components;
+
+import io.github.fishstiz.packed_packs.pack.PackNode;
+import io.github.fishstiz.packed_packs.util.GuiUtils;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Comparator;
+import java.util.Collection;
+
+public interface SortOption {
+    String name();
+
+    ResourceLocation icon();
+
+    Component text();
+
+    default @Nullable Comparator<PackNode> comparator(Collection<PackNode> packs) {
+        return null;
+    }
+
+    default boolean canSort() {
+        return true;
+    }
+
+    record Locked(@Nullable SortOption sort) implements SortOption {
+        @Override
+        public String name() {
+            return "LOCKED";
+        }
+
+        @Override
+        public ResourceLocation icon() {
+            return GuiUtils.LOCK_SPRITE_SMALL;
+        }
+
+        @Override
+        public Component text() {
+            return CommonComponents.EMPTY;
+        }
+
+        @Override
+        public boolean canSort() {
+            return false;
+        }
+    }
+}
